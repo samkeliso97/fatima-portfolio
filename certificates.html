@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificates | Fatima P. Makhubu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #eef2f7, #d9e3f0);
+            color: #333;
+            transition: background-color 0.3s, color 0.3s;
+            line-height: 1.6;
+        }
+
+        body.dark {
+            background: linear-gradient(135deg, #1a1f2b, #0f1420);
+            color: #f0f0f0;
+        }
+
+        body.dark header {
+            background: rgba(20, 25, 35, 0.9);
+        }
+
+        body.dark nav a {
+            color: #f0f0f0;
+        }
+
+        body.dark .certificate-card {
+            background: rgba(30, 35, 45, 0.7);
+            border-color: #2a2f3a;
+        }
+
+        body.dark footer {
+            background: rgba(10, 15, 25, 0.9);
+        }
+
+        #loader {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        body.dark #loader {
+            background: #121212;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #e0e0e0;
+            border-top: 5px solid #1f3b73;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1f3b73;
+        }
+
+        body.dark .logo {
+            color: #8aabf0;
+        }
+
+        .back-home {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .back-home a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            padding: 8px 15px;
+            border-radius: 30px;
+            background: rgba(31, 59, 115, 0.1);
+            transition: all 0.3s;
+        }
+
+        body.dark .back-home a {
+            color: #f0f0f0;
+            background: rgba(138, 171, 240, 0.1);
+        }
+
+        .back-home a:hover {
+            background: #1f3b73;
+            color: white;
+        }
+
+        nav {
+            display: flex;
+            gap: 25px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #1f3b73;
+        }
+
+        body.dark nav a:hover {
+            color: #8aabf0;
+        }
+
+        .menu-btn {
+            display: none;
+            font-size: 28px;
+            cursor: pointer;
+        }
+
+        #darkToggle {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .page-header {
+            text-align: center;
+            padding: 60px 20px 30px;
+            animation: fadeUp 1s ease;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-header h1 {
+            font-size: 3rem;
+            color: #1f3b73;
+            margin-bottom: 15px;
+        }
+
+        body.dark .page-header h1 {
+            color: #8aabf0;
+        }
+
+        .page-header p {
+            font-size: 1.2rem;
+            color: #555;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        body.dark .page-header p {
+            color: #aaa;
+        }
+
+        .certificates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            padding: 40px;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .certificate-card {
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.4s;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .certificate-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(31, 59, 115, 0.2);
+        }
+
+        .certificate-img {
+            width: 100%;
+            height: 220px;
+            overflow: hidden;
+        }
+
+        .certificate-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .certificate-card:hover .certificate-img img {
+            transform: scale(1.1);
+        }
+
+        .certificate-info {
+            padding: 25px;
+        }
+
+        .certificate-info h3 {
+            font-size: 1.4rem;
+            color: #1f3b73;
+            margin-bottom: 10px;
+        }
+
+        body.dark .certificate-info h3 {
+            color: #8aabf0;
+        }
+
+        .certificate-info .issuer {
+            font-weight: 600;
+            color: #2a4b99;
+            margin-bottom: 8px;
+        }
+
+        body.dark .certificate-info .issuer {
+            color: #9bb4f0;
+        }
+
+        .certificate-info .date {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        body.dark .certificate-info .date {
+            color: #aaa;
+        }
+
+        .certificate-info .credential {
+            font-size: 0.9rem;
+            color: #555;
+            margin-bottom: 20px;
+            padding: 8px 12px;
+            background: rgba(31, 59, 115, 0.05);
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        body.dark .certificate-info .credential {
+            background: rgba(138, 171, 240, 0.1);
+            color: #ccc;
+        }
+
+        .view-btn {
+            display: inline-block;
+            padding: 10px 25px;
+            background: #1f3b73;
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .view-btn:hover {
+            background: #2a4b99;
+            transform: translateX(5px);
+        }
+
+        .featured-cert {
+            background: linear-gradient(135deg, #1f3b73, #2a4b99);
+            color: white;
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        body.dark .featured-cert {
+            background: linear-gradient(135deg, #2a3a5a, #1f3b73);
+        }
+
+        .featured-cert .certificate-img {
+            width: 200px;
+            height: 150px;
+            border-radius: 10px;
+            flex-shrink: 0;
+        }
+
+        .featured-cert .certificate-info h3,
+        .featured-cert .certificate-info .issuer,
+        .featured-cert .certificate-info .date {
+            color: white;
+        }
+
+        .featured-cert .view-btn {
+            background: white;
+            color: #1f3b73;
+        }
+
+        .featured-cert .view-btn:hover {
+            background: #f0f0f0;
+            transform: translateX(5px);
+        }
+
+        .stats-section {
+            background: rgba(31, 59, 115, 0.05);
+            padding: 60px 40px;
+            margin: 40px 0;
+        }
+
+        body.dark .stats-section {
+            background: rgba(138, 171, 240, 0.05);
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: center;
+            gap: 80px;
+            max-width: 1000px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #1f3b73;
+            margin-bottom: 5px;
+        }
+
+        body.dark .stat-number {
+            color: #8aabf0;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        body.dark .stat-label {
+            color: #aaa;
+        }
+
+        #certificateModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 40px;
+        }
+
+        .modal-content {
+            position: relative;
+            max-width: 900px;
+            width: 90%;
+        }
+
+        .modal-content img {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content span {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: white;
+            font-size: 35px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .modal-content span:hover {
+            transform: rotate(90deg);
+        }
+
+        .modal-download {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: #1f3b73;
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .modal-download:hover {
+            background: #2a4b99;
+            transform: translateY(-3px);
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            margin-top: 60px;
+        }
+
+        footer p {
+            margin: 5px 0;
+            color: #555;
+        }
+
+        body.dark footer p {
+            color: #aaa;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+            }
+
+            nav {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(10px);
+                flex-direction: column;
+                align-items: center;
+                padding: 20px;
+                gap: 15px;
+            }
+
+            body.dark nav {
+                background: rgba(20, 25, 35, 0.95);
+            }
+
+            nav.show {
+                display: flex;
+            }
+
+            .menu-btn {
+                display: block;
+            }
+
+            .page-header h1 {
+                font-size: 2.5rem;
+            }
+
+            .certificates-grid {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+
+            .featured-cert {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .featured-cert .certificate-img {
+                width: 100%;
+                height: 200px;
+            }
+
+            .stats-container {
+                gap: 40px;
+            }
+
+            .stat-number {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .certificate-card {
+                margin: 0 10px;
+            }
+
+            #certificateModal {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="loader">
+        <div class="spinner"></div>
+    </div>
+
+    <header>
+        <div class="logo">Fatima</div>
+        <nav id="nav">
+             <a href="index.html">Home</a>
+             <a href="about_me.html">About Me</a>
+            <a href="index.html#gallery">Experience</a>
+            <a href="index.html#videos">Teaching Demo</a>
+            <a href="index.html#skills">Skills</a>
+            <a href="certificates.html">Certificates</a>
+            <a href="index.html#contact">Contact</a>
+        </nav>
+        <div class="menu-btn" onclick="toggleMenu()">☰</div>
+        <button id="darkToggle" aria-label="Toggle dark mode">🌙</button>
+    </header>
+
+    <section class="page-header">
+        <h1>My Certifications</h1>
+        <p>Professional development and qualifications in early childhood education</p>
+    </section>
+
+    <div class="certificates-grid">
+        <!-- Featured Certificate -->
+        <div class="certificate-card featured-cert">
+            <div class="certificate-img">
+                <img src="diploma.png" alt="Diploma in Early Childhood Care and Development">
+            </div>
+            <div class="certificate-info">
+                <h3>Diploma in Early Childhood Care and Development</h3>
+                <div class="issuer">Southern Africa Nazarene University (SANU)</div>
+                <div class="date">📅 Graduated: 12th April 2024</div>
+                <div class="credential">Award:Pass</div>
+                <button class="view-btn" onclick="openCertificate('ECCD CERTIFICATE .pdf', 'Diploma in Early Childhood Care and Development')">View Certificate →</button>
+            </div>
+        </div>
+
+        <!-- Certificate 1 -->
+        <div class="certificate-card">
+            <div class="certificate-img">
+                <img src="pro.png" alt="English Language Proficiency Attestation">
+            </div>
+            <div class="certificate-info">
+                <h3>English Language Proficiency Attestation</h3>
+                <div class="issuer">Ministry of Education - Kingdom of Eswatini</div>
+                <div class="date">📅 Completed: 30 April 2025</div>
+                <div class="credential">Reference No: TR1621264811</div>
+                <button class="view-btn" onclick="openCertificate('Proficiency .pdf', 'Montessori Diploma')">View Certificate →</button>
+            </div>
+        </div>
+
+        <!-- Certificate 2 -->
+        <div class="certificate-card">
+            <div class="certificate-img">
+                <img src="tefl.png" alt="Teaching English to Young Learners">
+            </div>
+            <div class="certificate-info">
+                <h3>TEFL: Teaching English to Young Learners</h3>
+                <div class="issuer">International TEFL Academy</div>
+                <div class="date">📅 Completed: 2025</div>
+                <div class="credential">Certificate No: TR1621264811</div>
+                <button class="view-btn" onclick="openCertificate('TEFL .pdf', 'TEFL Certificate')">View Certificate →</button>
+            </div>
+        </div>
+
+        
+
+    <div class="stats-section">
+        <div class="stats-container">
+            <div class="stat-item">
+                <div class="stat-number">3</div>
+                <div class="stat-label">Professional Certifications</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">5+</div>
+                <div class="stat-label">Years of Experience</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">2024</div>
+                <div class="stat-label">Latest Qualifications</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">SANU</div>
+                <div class="stat-label">Alma Mater</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Certificate Modal -->
+    <div id="certificateModal" onclick="closeModal(event)">
+        <div class="modal-content">
+            <span onclick="closeModal(event)">✖</span>
+            <img id="modalImage" src="" alt="Certificate">
+            <a id="downloadBtn" href="#" download class="modal-download">Download Certificate</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 Fatima P. Makhubu - All Rights Reserved</p>
+        <p>Designed by Samkeliso Shongwe</p>
+    </footer>
+
+    <script>
+        // Loader
+        window.addEventListener('load', function() {
+            const loader = document.getElementById('loader');
+            if (loader) {
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.display = 'none', 500);
+            }
+        });
+
+        // Dark mode
+        const darkToggle = document.getElementById('darkToggle');
+        if (darkToggle) {
+            darkToggle.addEventListener('click', function() {
+                document.body.classList.toggle('dark');
+                this.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
+            });
+        }
+
+        // Mobile menu
+        function toggleMenu() {
+            document.getElementById('nav').classList.toggle('show');
+        }
+
+        // Close mobile menu when clicking links
+        document.querySelectorAll('#nav a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('nav').classList.remove('show');
+            });
+        });
+
+        // Certificate modal
+        function openCertificate(src, title) {
+            const modal = document.getElementById('certificateModal');
+            const modalImg = document.getElementById('modalImage');
+            const downloadBtn = document.getElementById('downloadBtn');
+            
+            modalImg.src = src;
+            downloadBtn.href = src;
+            downloadBtn.download = `fatima-${title.toLowerCase().replace(/\s+/g, '-')}.jpg`;
+            modal.style.display = 'flex';
+        }
+
+        function closeModal(event) {
+            if (event.target === document.getElementById('certificateModal') || event.target.tagName === 'SPAN') {
+                document.getElementById('certificateModal').style.display = 'none';
+            }
+        }
+
+        // Close with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.getElementById('certificateModal').style.display = 'none';
+            }
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
